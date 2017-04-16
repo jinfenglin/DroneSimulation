@@ -302,7 +302,7 @@ public class ExampleGraphics2D extends JFrame {
 	 * This should be called after the JFrame has been shown.
 	 */
 	public void start() {
-		// initialize the last update time
+		// initialize the last updateStatus time
 		this.last = System.nanoTime();
 		// don't allow AWT to paint the canvas since we are
 		this.canvas.setIgnoreRepaint(true);
@@ -331,7 +331,7 @@ public class ExampleGraphics2D extends JFrame {
 	}
 	
 	/**
-	 * The method calling the necessary methods to update
+	 * The method calling the necessary methods to updateStatus
 	 * the game, graphics, and poll for input.
 	 */
 	protected void gameLoop() {
@@ -364,7 +364,7 @@ public class ExampleGraphics2D extends JFrame {
         // (on Linux, this fixes event queue problems)
         Toolkit.getDefaultToolkit().sync();
         
-        // update the World
+        // updateStatus the World
         
         // get the current time
         long time = System.nanoTime();
@@ -374,7 +374,7 @@ public class ExampleGraphics2D extends JFrame {
         this.last = time;
     	// convert from nanoseconds to seconds
     	double elapsedTime = diff / NANO_TO_BASE;
-        // update the world with the elapsed time
+        // updateStatus the world with the elapsed time
         this.world.update(elapsedTime);
 	}
 

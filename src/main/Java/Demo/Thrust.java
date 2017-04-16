@@ -137,6 +137,7 @@ public class Thrust extends SimulationFrame {
 		this.world.addBody(r);
 		
 		SimulationBody t = new SimulationBody();
+		//t.getChangeInPosition();
 		t.addFixture(Geometry.createRectangle(15, 1));
 		t.translate(0, 5);
 		t.setMass(MassType.INFINITE);
@@ -159,7 +160,7 @@ public class Thrust extends SimulationFrame {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.dyn4j.samples.AsyncSimulationFrame#update(java.awt.Graphics2D, double)
+	 * @see org.dyn4j.samples.AsyncSimulationFrame#updateStatus(java.awt.Graphics2D, double)
 	 */
 	@Override
 	protected void update(Graphics2D g, double elapsedTime) {

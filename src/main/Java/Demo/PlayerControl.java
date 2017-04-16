@@ -150,7 +150,7 @@ public class PlayerControl extends SimulationFrame {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.dyn4j.samples.AsyncSimulationFrame#update(java.awt.Graphics2D, double)
+	 * @see org.dyn4j.samples.AsyncSimulationFrame#updateStatus(java.awt.Graphics2D, double)
 	 */
 	@Override
 	protected void update(Graphics2D g, double elapsedTime) {

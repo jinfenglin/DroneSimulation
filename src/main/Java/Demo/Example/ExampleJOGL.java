@@ -274,7 +274,7 @@ public class ExampleJOGL extends JFrame implements GLEventListener {
 	 * This should be called after the JFrame has been shown.
 	 */
 	public void start() {
-		// initialize the last update time
+		// initialize the last updateStatus time
 		this.last = System.nanoTime();
 		// create an animator to animated the canvas
 		Animator animator = new Animator(this.canvas);
@@ -362,7 +362,7 @@ public class ExampleJOGL extends JFrame implements GLEventListener {
         this.last = time;
     	// convert from nanoseconds to seconds
     	double elapsedTime = diff / NANO_TO_BASE;
-        // update the world with the elapsed time
+        // updateStatus the world with the elapsed time
         this.world.update(elapsedTime);
 	}
 

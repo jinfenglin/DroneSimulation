@@ -4,23 +4,27 @@ import org.dyn4j.dynamics.World;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 
 public abstract class AsyncSimulationFrame {
     /**
      * Physic Engine
      */
-    private World world;
+    protected World world;
     /**
      * The time stamp for the last iteration
      */
     private Instant last;
+    protected double simulationTime;
+    protected double simulationCycle = TimeUnit.MILLISECONDS.toSeconds(5);
 
     private boolean isStopped;
 
     AsyncSimulationFrame() {
         this.world = new World();
         isStopped = false;
+        simulationTime = 0;
         initializeWorld();
     }
 
@@ -28,6 +32,7 @@ public abstract class AsyncSimulationFrame {
 
     /**
      * Override this function to add control on simulation bodies
+     *
      * @param elapsedTime
      */
     protected void update(double elapsedTime) {
@@ -55,10 +60,8 @@ public abstract class AsyncSimulationFrame {
     }
 
     private void loopIteration() {
-        Instant now = Instant.now();
-        Duration duration = Duration.between(last, now);
-        last = now;
-        long eclapsedTime = duration.getSeconds();
+        double eclapsedTime = simulationCycle;
+        simulationTime += simulationCycle;
         world.update(eclapsedTime);
     }
 

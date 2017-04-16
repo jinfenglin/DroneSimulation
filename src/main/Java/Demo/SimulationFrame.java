@@ -159,7 +159,7 @@ public abstract class SimulationFrame extends JFrame {
      * This should be called after the JFrame has been shown.
      */
     private void start() {
-        // initialize the last update time
+        // initialize the last updateStatus time
         this.last = System.nanoTime();
         // don't allow AWT to paint the canvas since we are
         this.canvas.setIgnoreRepaint(true);
@@ -192,7 +192,7 @@ public abstract class SimulationFrame extends JFrame {
     }
 
     /**
-     * The method calling the necessary methods to update
+     * The method calling the necessary methods to updateStatus
      * the game, graphics, and poll for input.
      */
     private void gameLoop() {
@@ -219,7 +219,7 @@ public abstract class SimulationFrame extends JFrame {
         this.render(g, elapsedTime);
 
         if (!paused) {
-            // update the World
+            // updateStatus the World
             this.update(g, elapsedTime);
         }
 
@@ -275,7 +275,7 @@ public abstract class SimulationFrame extends JFrame {
      * Renders the example.
      *
      * @param g           the graphics object to render to
-     * @param elapsedTime the elapsed time from the last update
+     * @param elapsedTime the elapsed time from the last updateStatus
      */
     protected void render(Graphics2D g, double elapsedTime) {
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
@@ -293,7 +293,7 @@ public abstract class SimulationFrame extends JFrame {
      * Renders the body.
      *
      * @param g           the graphics object to render to
-     * @param elapsedTime the elapsed time from the last update
+     * @param elapsedTime the elapsed time from the last updateStatus
      * @param body        the body to render
      */
     protected void render(Graphics2D g, double elapsedTime, SimulationBody body) {
@@ -305,10 +305,10 @@ public abstract class SimulationFrame extends JFrame {
      * Updates the world.
      *
      * @param g           the graphics object to render to
-     * @param elapsedTime the elapsed time from the last update
+     * @param elapsedTime the elapsed time from the last updateStatus
      */
     protected void update(Graphics2D g, double elapsedTime) {
-        // update the world with the elapsed time
+        // updateStatus the world with the elapsed time
         System.out.println("---------------------------" + Double.toString(elapsedTime));
         for (int i = 0; i < world.getBodyCount(); i++) {
             System.out.println("velocity = "+ world.getBody(i).getLinearVelocity().toString()+" Force="+world.getBody(i).getForce()+" Mass="+world.getBody(i).getMass().toString()+" Acc="+world.getBody(i).getAccumulatedForce());
