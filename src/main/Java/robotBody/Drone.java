@@ -5,6 +5,7 @@ import asyncSimulation.ConstantForce;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.Vector2;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class Drone extends Body {
@@ -37,7 +38,7 @@ public class Drone extends Body {
      * @param eclapsedTime
      * @return True if the status of the has been changed, False if the drone status not changed
      */
-    public boolean updateStatus(double eclapsedTime) {
+    public boolean updateStatus(double eclapsedTime) throws Exception {
         if (delay <= 0) {
             double latency = runBashCommand();
             delay = Math.max(refreshCycle, latency);
@@ -56,13 +57,20 @@ public class Drone extends Body {
      *
      * @return
      */
-    protected double runBashCommand() {
+    protected double runBashCommand() throws InterruptedException, IOException {
         Random rand = new Random();
         this.clearForce();
         this.clearAccumulatedForce();
-        ConstantForce force = new ConstantForce(new Vector2(rand.nextDouble(), rand.nextDouble()), rand.nextDouble());
+        ConstantForce force = new ConstantForce(new Vector2(100, 0), 0.5);
         applyConstantForce(force);
         //setLinearVelocity(1, 1);
+
+        String cmd = "cat /Users/jinfenglin/Downloads/hyper.txt";
+        Process proc = Runtime.getRuntime().exec(cmd);
+        proc.waitFor();
+
+        //TODO Read delay from statistics
+
         return 1.65;
     }
 

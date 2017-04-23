@@ -41,4 +41,7 @@ task replay(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "simulationReplay.SimulationReplay"
 }
-
+task demo(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "Demo.Billiards"
+}

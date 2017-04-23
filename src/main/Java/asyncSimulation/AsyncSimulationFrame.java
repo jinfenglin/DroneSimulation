@@ -29,7 +29,7 @@ public abstract class AsyncSimulationFrame {
      *
      * @param elapsedTime
      */
-    protected void update(double elapsedTime) {
+    protected void update(double elapsedTime) throws Exception{
         world.update(elapsedTime);
 
     }
@@ -38,7 +38,7 @@ public abstract class AsyncSimulationFrame {
         this.isStopped = true;
     }
 
-    public void run() {
+    public void run() throws Exception{
         while (!isStopped && simulationTime < 10) {
             if (simulationTime % 2 < 0.001)
                 System.out.println(simulationTime);
@@ -46,7 +46,7 @@ public abstract class AsyncSimulationFrame {
         }
     }
 
-    private void loopIteration() {
+    private void loopIteration() throws Exception{
         double eclapsedTime = simulationCycle;
         simulationTime += eclapsedTime;
         update(eclapsedTime);

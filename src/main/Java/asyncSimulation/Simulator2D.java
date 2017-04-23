@@ -31,7 +31,7 @@ public class Simulator2D extends AsyncSimulationFrame {
     }
 
     @Override
-    protected void update(double eclapsedTime) {
+    protected void update(double eclapsedTime) throws Exception{
         for (UUID id : drones.keySet()) {
             Drone drone = (Drone) world.getBody(drones.get(id));
             boolean statusChanged = drone.updateStatus(eclapsedTime);
@@ -49,7 +49,7 @@ public class Simulator2D extends AsyncSimulationFrame {
         gson = new Gson();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         Simulator2D simulator2D = new Simulator2D();
         simulator2D.run();
     }

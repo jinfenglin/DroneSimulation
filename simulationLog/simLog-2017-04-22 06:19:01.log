@@ -1,0 +1,6 @@
+SimulationDroneEvent:{"wordCenter":{"x":0.0,"y":0.0},"velocity":{"x":0.0,"y":0.0},"force":{"validTime":0.5,"force":{"x":100.0,"y":0.0}},"time":0.02}
+SimulationDroneEvent:{"wordCenter":{"x":15.260373155109997,"y":0.0},"velocity":{"x":13.366750208855477,"y":0.0},"force":{"validTime":0.5,"force":{"x":100.0,"y":0.0}},"time":1.700000000000001}
+SimulationDroneEvent:{"wordCenter":{"x":49.23419660261779,"y":0.0},"velocity":{"x":26.733500417710953,"y":0.0},"force":{"validTime":0.5,"force":{"x":100.0,"y":0.0}},"time":3.3800000000000026}
+SimulationDroneEvent:{"wordCenter":{"x":101.92147034252282,"y":0.0},"velocity":{"x":40.100250626566364,"y":0.0},"force":{"validTime":0.5,"force":{"x":100.0,"y":0.0}},"time":5.05999999999998}
+SimulationDroneEvent:{"wordCenter":{"x":173.3221943748254,"y":0.0},"velocity":{"x":53.46700083542173,"y":0.0},"force":{"validTime":0.5,"force":{"x":100.0,"y":0.0}},"time":6.739999999999944}
+SimulationDroneEvent:{"wordCenter":{"x":263.4363686995255,"y":0.0},"velocity":{"x":66.83375104427714,"y":0.0},"force":{"validTime":0.5,"force":{"x":100.0,"y":0.0}},"time":8.41999999999991}

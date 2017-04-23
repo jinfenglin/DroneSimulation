@@ -19,14 +19,14 @@ import java.util.List;
 public class SimulationReplay extends Application {
     SimReplayManger manger;
     private GraphicsContext g;
-    final int WIDTH = 800;
-    final int HEIGHT = 400;
+    final int WIDTH = 1200;
+    final int HEIGHT = 800;
     boolean stop_animation;
 
     @Override
     public void init() throws Exception {
         stop_animation = false;
-        manger = new SimReplayManger("simulationLog/simLog-2017-04-22 01:53:58.log");
+        manger = new SimReplayManger("simulationLog/simLog-2017-04-22 04:15:14.log");
     }
 
     public static void main(String[] args) {
@@ -39,38 +39,52 @@ public class SimulationReplay extends Application {
         //BorderPane root = new BorderPane();
         StackPane root = new StackPane();
         root.getChildren().add(createContent());
-        primaryStage.setScene(new Scene(root, 1200, 600));
+        primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
         primaryStage.show();
     }
 
     public Canvas createContent() {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         g = canvas.getGraphicsContext2D();
+
         AnimationTimer timer;
         timer = new AnimationTimer() {
-            private long lastUpdate = 0;
+            double lastUpdate = System.nanoTime();
+            double sim_time = 0;
 
             @Override
             public void handle(long now) {
-                long duration = now - lastUpdate;
+                double duration = (now - lastUpdate) / 1000000000.0;
+                sim_time += duration;
                 lastUpdate = now;
-                drawObjects(manger.getBodies(), 100);
-                stop_animation = manger.updateWorld(duration / 100);
-                if (stop_animation)
+                drawObjects(manger.getBodies(), 40);
+
+                //System.out.print(String.format("sim_time=%s duration=%s |", sim_time, duration));
+                //System.out.print(manger.getBodies().get(0).getWorldCenter());
+                //System.out.print("\n");
+
+                stop_animation = manger.updateWorld(duration);
+                if (stop_animation) {
                     this.stop();
+                    System.out.print("Finished!\n");
+                }
             }
 
             private void drawObjects(List<Body> bodies, double scale) {
+                g.clearRect(0, 0, WIDTH, HEIGHT);
                 for (Body body : bodies) {
                     Polygon polygon = (Polygon) body.getFixture(0).getShape();
+                    Vector2 wordCenter = body.getWorldCenter();
                     Vector2[] vertices = polygon.getVertices();
                     int l = vertices.length;
                     double[] xPoints = new double[l];
                     double[] yPoints = new double[l];
                     for (int i = 0; i < l; i++) {
-                        xPoints[i] = vertices[i].x * scale;
-                        yPoints[i] = vertices[i].y * scale;
+                        xPoints[i] = (vertices[i].x + wordCenter.x) * scale;
+                        yPoints[i] = (vertices[i].y + wordCenter.y) * scale;
+                        //System.out.print("("+ xPoints[i] + " " + yPoints[i] + ")");
                     }
+                    //System.out.print("\n");
                     g.setFill(Color.GREEN);
                     g.fillPolygon(xPoints, yPoints, l);
                 }
