@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.dyn4j:dyn4j:3.2.3">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dyn4j/dyn4j/3.2.3/36124ca574306ae01de87b71fdc3fa0195504337/dyn4j-3.2.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dyn4j/dyn4j/3.2.3/a5fb13cbb39868f4b9ea4b23b8313921399651b9/dyn4j-3.2.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
