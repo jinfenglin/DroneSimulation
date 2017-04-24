@@ -74,6 +74,7 @@ public class Drone extends Body {
         Process proc = Runtime.getRuntime().exec(cmd);
         BufferedReader bf = new BufferedReader(new InputStreamReader(proc.getInputStream()));
         String line;
+        System.out.println("Test ...");
         while ((line = bf.readLine()) != null) {
             System.out.print(line);
         }
