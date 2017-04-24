@@ -78,7 +78,7 @@ public class Simulator2D extends AsyncSimulationFrame {
         gson = new Gson();
         drones = new HashMap<>();
         obstacles = new ArrayList<>();
-        readGraph("graph/graph-2017-04-24 18:04:32.log");
+        readGraph("graph/graph-2017-04-24 18:27:12.log");
     }
 
     public static void main(String[] args) throws Exception {
