@@ -12,12 +12,12 @@ import java.util.Random;
  * Created by jinfenglin on 4/24/17.
  */
 public class MapGenerator {
-    private static Logger logger = LogManager.getLogger("GraphLog");
+    private static Logger logger = LogManager.getLogger("graphLog");
     final int WIDTH = 1200;
     final int HEIGTH = 800;
     int number;
-    double uppperBound = 10;
-    Random rand;
+    int uppperBound = 10;
+    Random randx, randy;
 
     List<Vector2> leftTopPoints, rightDownPoints;
 
@@ -25,14 +25,15 @@ public class MapGenerator {
         leftTopPoints = new ArrayList<>();
         rightDownPoints = new ArrayList<>();
         this.number = num;
-        rand = new Random();
+        randx = new Random(System.currentTimeMillis());
+        randy = new Random(System.currentTimeMillis());
     }
 
     private void generateOnePolygen() {
-        int xl = rand.nextInt(1200);
-        int yl = rand.nextInt(800);
-        int xrange = rand.nextInt(10);
-        int yrange = rand.nextInt(10);
+        int xl = randx.nextInt(WIDTH);
+        int yl = randy.nextInt(HEIGTH);
+        int xrange = randx.nextInt(uppperBound);
+        int yrange = randy.nextInt(uppperBound);
         int xr = xl + xrange;
         int yr = yl + yrange;
         boolean flag = true;
@@ -63,7 +64,7 @@ public class MapGenerator {
         double min_x = Math.min(p1.x, q1.x);
         double max_y = Math.max(p2.y, q2.y);
         double min_y = Math.min(p1.y, q1.y);
-        if (xrange1 + xrange2 < max_x - min_x && yrange1 + yrange2 < max_y - min_y)
+        if (xrange1 + xrange2 > max_x - min_x && yrange1 + yrange2 > max_y - min_y)
             return true;
         return false;
 
@@ -76,7 +77,7 @@ public class MapGenerator {
         for (int i = 0; i < number; i++) {
             Vector2 p1 = leftTopPoints.get(i);
             Vector2 p2 = rightDownPoints.get(i);
-            logger.info(p1.x + "," + p1.y + "," + p2.x + "," + p2.y + "\n");
+            logger.info(p1.x + "," + p1.y + "," + p2.x + "," + p2.y);
         }
     }
 

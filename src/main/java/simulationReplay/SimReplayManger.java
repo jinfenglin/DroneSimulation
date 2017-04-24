@@ -1,7 +1,8 @@
 package simulationReplay;
 
-import asyncSimulation.SimulationDroneEvent;
+import event.SimulationDroneEvent;
 import com.google.gson.Gson;
+import event.WordInfoEvent;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.World;
@@ -13,11 +14,13 @@ import utils.PhysicUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class SimReplayManger {
     List<SimulationDroneEvent> events;
+    List<Body> obstacles;
     double cur_time;
     World world;
     Gson gson;
@@ -38,24 +41,19 @@ public class SimReplayManger {
         b.setRestitution(0.9);
         testDrone.setMass(MassType.NORMAL);
         testDrone.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
-        testDrone.translate(2,2);
+        testDrone.translate(2, 2);
         world.addBody(testDrone);
 
-        //test obstacle
-        Body body = new Body();
-        Vector2 obCenter = new Vector2(8, 4);
-        double ob_width = 4, ob_height = 8;
-        BodyFixture bf = body.addFixture(Geometry.createRectangle(ob_width, ob_height));;
-        bf.setRestitution(0.9);
-        body.setMass( MassType.NORMAL);
-        body.translate(obCenter);
+        for (Body body : obstacles) {
+            world.addBody(body);
+        }
 
-        world.addBody(body);
     }
 
     public void readSimulationLog(String logPath) throws Exception {
         gson = new Gson();
         events = new LinkedList<>();
+        obstacles = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader(logPath));
         String line = "";
         while ((line = bf.readLine()) != null) {
@@ -65,6 +63,9 @@ public class SimReplayManger {
             if (eventType.equals("SimulationDroneEvent")) {
                 SimulationDroneEvent event = gson.fromJson(eventContent, SimulationDroneEvent.class);
                 events.add(event);
+            } else if (eventType.equals("WordInfoEvent")) {
+                WordInfoEvent event = gson.fromJson(eventContent, WordInfoEvent.class);
+                obstacles.add(event.body);
             }
         }
     }
