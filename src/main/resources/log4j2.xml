@@ -2,10 +2,20 @@
 <Configuration status="warn">
     <Properties>
         <Property name="log-path">simulationLog</Property>
+        <Property name="graph-path">graph</Property>
     </Properties>
 
     <Appenders>
         <RollingFile name="file-log" filePattern="${log-path}/simLog-%d{yyyy-MM-dd HH:mm:ss}.log">
+            <PatternLayout>
+                <pattern> %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="graph-log" filePattern="${graph-path}/graph-%d{yyyy-MM-dd HH:mm:ss}.log">
             <PatternLayout>
                 <pattern> %msg%n</pattern>
             </PatternLayout>
@@ -21,6 +31,9 @@
     <Loggers>
         <Logger name="simLog" level="info" additivity="false">
             <appender-ref ref="file-log" level="info"/>
+        </Logger>
+        <Logger name="graphLog" level="info" additivity="false">
+            <appender-ref ref="graph-log" level="info"/>
         </Logger>
         <Root level="info" additivity="false">
             <appender-ref ref="console" level="info"/>

@@ -26,7 +26,7 @@ public class SimulationReplay extends Application {
     @Override
     public void init() throws Exception {
         stop_animation = false;
-        manger = new SimReplayManger("simulationLog/simLog-2017-04-22 04:15:14.log");
+        manger = new SimReplayManger("simulationLog/simLog-2017-04-24 00:24:12.log");
     }
 
     public static void main(String[] args) {
@@ -82,9 +82,7 @@ public class SimulationReplay extends Application {
                     for (int i = 0; i < l; i++) {
                         xPoints[i] = (vertices[i].x + wordCenter.x) * scale;
                         yPoints[i] = (vertices[i].y + wordCenter.y) * scale;
-                        //System.out.print("("+ xPoints[i] + " " + yPoints[i] + ")");
                     }
-                    //System.out.print("\n");
                     g.setFill(Color.GREEN);
                     g.fillPolygon(xPoints, yPoints, l);
                 }

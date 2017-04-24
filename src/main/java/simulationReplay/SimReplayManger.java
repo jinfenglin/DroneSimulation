@@ -93,7 +93,9 @@ public class SimReplayManger {
             //Apply the event to the world
             //TODO Add body id to log file, retrive object by id
             Drone drone = (Drone) world.getBody(0);
+            //System.out.println("Velocity="+event.velocity);
             drone.applyConstantForce(event.force);
+            drone.setLinearVelocity(event.velocity);
         }
         world.update(elapsedTime);
         return false;

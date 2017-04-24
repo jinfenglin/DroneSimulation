@@ -40,7 +40,7 @@ public abstract class AsyncSimulationFrame {
 
     public void run() throws Exception{
         while (!isStopped && simulationTime < 10) {
-            if (simulationTime % 2 < 0.001)
+            if (simulationTime % 2 < 0.01)
                 System.out.println(simulationTime);
             loopIteration();
         }
