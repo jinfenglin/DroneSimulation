@@ -5,7 +5,9 @@ import asyncSimulation.ConstantForce;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.Vector2;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Random;
 
 public class Drone extends Body {
@@ -65,8 +67,16 @@ public class Drone extends Body {
         applyConstantForce(force);
         //setLinearVelocity(1, 1);
 
-        String cmd = "cat /Users/jinfenglin/Downloads/hyper.txt";
+        String gem5 = "/home/jinfenglin/Documents/gem5-gpu";
+        String cmd = String.format("%s/build/VI_hammer/gem5.opt ../gem5-gpu/configs/se_fusion.py " +
+                "-c %s/benchmarks/rodinia/droneControl/gem5_fusion_droneControl" +
+                " -o \"input.txt \"", gem5);
         Process proc = Runtime.getRuntime().exec(cmd);
+        BufferedReader bf = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        String line;
+        while ((line = bf.readLine()) != null) {
+            System.out.print(line);
+        }
         proc.waitFor();
 
         //TODO Read delay from statistics
