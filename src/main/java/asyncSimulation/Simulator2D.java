@@ -28,6 +28,7 @@ public class Simulator2D extends AsyncSimulationFrame {
     @Override
     protected void initializeWorld() {
         drones = new HashMap<>();
+        obstacles = new ArrayList<>();
         world.setGravity(new Vector2(0, 0));
         Drone d1 = new Drone(0.5, 0.5);
         Vector2 d1Center = new Vector2(0, 0);
