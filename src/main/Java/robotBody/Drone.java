@@ -70,7 +70,7 @@ public class Drone extends Body {
         String gem5 = "/home/jinfenglin/Documents/gem5-gpu";
         String cmd = String.format("%s/build/VI_hammer/gem5.opt ../gem5-gpu/configs/se_fusion.py " +
                 "-c %s/benchmarks/rodinia/droneControl/gem5_fusion_droneControl" +
-                " -o \"input.txt \"", gem5);
+                " -o \"input.txt \"", gem5, gem5);
         Process proc = Runtime.getRuntime().exec(cmd);
         BufferedReader bf = new BufferedReader(new InputStreamReader(proc.getInputStream()));
         String line;
