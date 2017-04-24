@@ -22,13 +22,11 @@ import java.util.*;
 public class Simulator2D extends AsyncSimulationFrame {
     private static Logger logger = LogManager.getLogger("simLog");
     private Map<UUID, Integer> drones;
-    private List<Rectangle> obstacles;
+    private List<WordInfoEvent> obstacles;
     private Gson gson;
 
     @Override
     protected void initializeWorld() {
-        drones = new HashMap<>();
-        obstacles = new ArrayList<>();
         world.setGravity(new Vector2(0, 0));
         Drone d1 = new Drone(0.5, 0.5);
         Vector2 d1Center = new Vector2(0, 0);
@@ -37,21 +35,9 @@ public class Simulator2D extends AsyncSimulationFrame {
         d1.addFixture(Geometry.createRectangle(width, height));
         d1.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
         world.addBody(d1);
-        addObstacles();
         drones.put(d1.getId(), 0);
     }
 
-    private void addObstacles() {
-        for (Rectangle rec : obstacles) {
-            Body body = new Body();
-            BodyFixture bf = body.addFixture(rec);
-            body.setMass(MassType.INFINITE);
-            world.addBody(body);
-            String jsonString = gson.toJson(new WordInfoEvent(body));
-            logger.info("WordInfoEvent:" + jsonString);
-        }
-
-    }
 
     @Override
     protected void update(double eclapsedTime) throws Exception {
@@ -73,9 +59,14 @@ public class Simulator2D extends AsyncSimulationFrame {
             String line;
             while (((line = bf.readLine()) != null)) {
                 String[] coordinate = line.split(",");
-                double width = Double.valueOf(coordinate[2]) - Double.valueOf(coordinate[1]);
-                double height = Double.valueOf(coordinate[1]) - Double.valueOf(coordinate[0]);
-                obstacles.add(new Rectangle(width, height));
+                double width = Double.valueOf(coordinate[2]) - Double.valueOf(coordinate[0]);
+                double height = Double.valueOf(coordinate[3]) - Double.valueOf(coordinate[1]);
+                System.out.println(width + " " + height);
+                Rectangle rectangle = new Rectangle(width, height);
+                Vector2 leftTop = new Vector2(Double.valueOf(coordinate[0]), Double.valueOf(coordinate[1]));
+                WordInfoEvent wEvent = new WordInfoEvent(new BodyFixture(rectangle), leftTop);
+                String jsonString = gson.toJson(wEvent);
+                logger.info("WorldInfoEvent:" + jsonString);
             }
         } catch (Exception e) {
             System.out.print(e);
@@ -85,7 +76,9 @@ public class Simulator2D extends AsyncSimulationFrame {
     public Simulator2D() {
         super();
         gson = new Gson();
-        readGraph("graph/graph-2017-04-24 15:55:17.log");
+        drones = new HashMap<>();
+        obstacles = new ArrayList<>();
+        readGraph("graph/graph-2017-04-24 18:04:32.log");
     }
 
     public static void main(String[] args) throws Exception {

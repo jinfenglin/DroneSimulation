@@ -65,7 +65,10 @@ public class SimReplayManger {
                 events.add(event);
             } else if (eventType.equals("WordInfoEvent")) {
                 WordInfoEvent event = gson.fromJson(eventContent, WordInfoEvent.class);
-                obstacles.add(event.body);
+                Body body = new Body();
+                body.addFixture(event.bodyFixture);
+                body.translate(event.leftTop);
+                obstacles.add(body);
             }
         }
     }

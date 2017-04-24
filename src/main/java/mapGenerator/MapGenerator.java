@@ -16,7 +16,7 @@ public class MapGenerator {
     final int WIDTH = 1200;
     final int HEIGTH = 800;
     int number;
-    int uppperBound = 10;
+    int uppperBound = 20;
     Random randx, randy;
 
     List<Vector2> leftTopPoints, rightDownPoints;
@@ -32,8 +32,8 @@ public class MapGenerator {
     private void generateOnePolygen() {
         int xl = randx.nextInt(WIDTH);
         int yl = randy.nextInt(HEIGTH);
-        int xrange = randx.nextInt(uppperBound);
-        int yrange = randy.nextInt(uppperBound);
+        int xrange = randx.nextInt(uppperBound)+1;
+        int yrange = randy.nextInt(uppperBound)+1;
         int xr = xl + xrange;
         int yr = yl + yrange;
         boolean flag = true;
