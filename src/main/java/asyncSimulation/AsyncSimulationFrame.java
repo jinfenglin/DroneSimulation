@@ -19,7 +19,6 @@ public abstract class AsyncSimulationFrame {
         this.world = new World();
         isStopped = false;
         simulationTime = 0;
-        this.initializeWorld();
     }
 
     protected abstract void initializeWorld();
@@ -39,6 +38,7 @@ public abstract class AsyncSimulationFrame {
     }
 
     public void run() throws Exception{
+        this.initializeWorld();
         while (!isStopped && simulationTime < 10) {
             if (simulationTime % 2 < 0.01)
                 System.out.println(simulationTime);
