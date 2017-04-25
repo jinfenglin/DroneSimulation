@@ -8,7 +8,6 @@ import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
-import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 import robotBody.Drone;
 import utils.PhysicUtil;
@@ -18,6 +17,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import static utils.PhysicUtil.createObstacle;
 
 public class SimReplayManger {
     List<SimulationDroneEvent> events;
@@ -29,20 +30,15 @@ public class SimReplayManger {
     private void initWorld() {
         world = new World();
         world.setGravity(new Vector2(0, 0));
-
-        /**
-         * debug setup
-         */
-        Drone testDrone = new Drone(0, 0);
-        Vector2 d1Center = new Vector2(0, 2);
+        Drone testDrone = new Drone(0.5, 0.5);
+        Vector2 d1Center = new Vector2(0, 0);
         double width = 0.45, height = 0.55;
         double mass = 3.99;
         BodyFixture b = testDrone.addFixture(Geometry.createRectangle(width, height));
-        //b.setDensity(100);
-        b.setRestitution(0.9);
         testDrone.setMass(MassType.NORMAL);
         testDrone.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
-        testDrone.translate(2, 2);
+        testDrone.getFixture(0).setRestitution(0.8);
+        testDrone.translate(0, 5);
         world.addBody(testDrone);
         for (Body body : obstacles) {
             world.addBody(body);
@@ -65,11 +61,7 @@ public class SimReplayManger {
                 events.add(event);
             } else if (eventType.equals("WorldInfoEvent")) {
                 WordInfoEvent event = gson.fromJson(eventContent, WordInfoEvent.class);
-                Body body = new Body();
-                double width = event.rightBottom.x - event.leftTop.x;
-                double height = event.rightBottom.y - event.leftTop.y;
-                body.addFixture(Geometry.createRectangle(width, height));
-                body.translate((event.rightBottom.x + event.leftTop.x) / 2, (event.rightBottom.y + event.leftTop.y) / 2);
+                Body body = createObstacle(event.leftTop, event.rightBottom);
                 obstacles.add(body);
             }
         }
@@ -94,12 +86,13 @@ public class SimReplayManger {
         SimulationDroneEvent event = events.get(0);
         cur_time += elapsedTime;
         if (event.time <= cur_time) {
-            System.out.print(String.format("Event happends! EventTime=%s CurTime=%s\n", event.time, cur_time));
+            System.out.println(String.format("Event happends! EventTime=%s CurTime=%s, location=%s", event.time, cur_time, world.getBody(0).getWorldCenter()));
             events.remove(0);
             Drone drone = (Drone) world.getBody(0);
             drone.applyConstantForce(event.force);
             drone.setLinearVelocity(event.velocity);
         }
+        //System.out.println(String.format("locatoin = %s", world.getBody(0).getWorldCenter()));
         world.update(elapsedTime);
         return false;
     }

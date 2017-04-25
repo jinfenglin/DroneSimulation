@@ -6,9 +6,9 @@ import event.SimulationDroneEvent;
 import event.WordInfoEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.Geometry;
-import org.dyn4j.geometry.Rectangle;
+import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import robotBody.Drone;
 import utils.PhysicUtil;
@@ -17,9 +17,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
+import static utils.PhysicUtil.createObstacle;
+
 public class Simulator2D extends AsyncSimulationFrame {
     private static Logger logger = LogManager.getLogger("simLog");
     private Map<UUID, Integer> drones;
+    private List<Body> obstacles;
     private Gson gson;
 
     @Override
@@ -30,22 +33,29 @@ public class Simulator2D extends AsyncSimulationFrame {
         double width = 0.45, height = 0.55;
         double mass = 3.99;
         d1.addFixture(Geometry.createRectangle(width, height));
+        d1.setMassType(MassType.NORMAL);
         d1.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
+        d1.translate(0, 5);
+        d1.getFixture(0).setRestitution(0.8);
         world.addBody(d1);
+        for (Body obstacle : obstacles) {
+            world.addBody(obstacle);
+            world.addListener(new CollisionDetector(d1, obstacle));
+        }
         drones.put(d1.getId(), 0);
-    }
 
+    }
 
     @Override
     protected void update(double eclapsedTime) throws Exception {
         for (UUID id : drones.keySet()) {
             Drone drone = (Drone) world.getBody(drones.get(id));
+            drone.sensorInput(world.getBodies());
             boolean statusChanged = drone.updateStatus(eclapsedTime);
             if (statusChanged) {
                 String jsonString = gson.toJson(new SimulationDroneEvent(drone.getConstantForce(), drone.getLinearVelocity(), drone.getWorldCenter(), simulationTime));
                 logger.info("SimulationDroneEvent:" + jsonString);
             }
-
         }
         super.update(eclapsedTime);
     }
@@ -61,6 +71,7 @@ public class Simulator2D extends AsyncSimulationFrame {
                 WordInfoEvent wEvent = new WordInfoEvent(leftTop, rightBottom);
                 String jsonString = gson.toJson(wEvent);
                 logger.info("WorldInfoEvent:" + jsonString);
+                obstacles.add(createObstacle(leftTop, rightBottom));
             }
         } catch (Exception e) {
             System.out.print(e);
@@ -71,7 +82,8 @@ public class Simulator2D extends AsyncSimulationFrame {
         super();
         gson = new Gson();
         drones = new HashMap<>();
-        readGraph("graph/graph-2017-04-24 18:27:12.log");
+        obstacles = new LinkedList<>();
+        readGraph("graph/graph-2017-04-25 03:49:59.log");
     }
 
     public static void main(String[] args) throws Exception {

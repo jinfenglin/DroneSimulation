@@ -3,12 +3,16 @@ package robotBody;
 
 import asyncSimulation.ConstantForce;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static utils.PhysicUtil.findAdjacent;
+import static utils.PhysicUtil.vec2str;
 
 public class Drone extends Body {
     /**
@@ -25,6 +29,15 @@ public class Drone extends Body {
     private int dealineMissCount;
     private ConstantForce constantForce;
     private Map<String, Vector2> directionMap;
+    private String gem5Dir = "/home/jinfenglin/Documents/gem5-gpu";
+    private String gem5 = gem5Dir + "/gem5/build/VI_hammer/gem5.opt";
+    private String config = gem5Dir + "/gem5-gpu/configs/se_fusion.py";
+    private String benchmarkDir = gem5Dir + "/benchmarks/rodinia/droneControl";
+    private String controlProgram = benchmarkDir + "/gem5_fusion_droneControl";
+    private String inputData = benchmarkDir + "/input.txt";
+    private String output_path = "m5out/stats.txt";
+
+    double sensorRange;
 
 
     public Body applyConstantForce(ConstantForce force) {
@@ -32,6 +45,29 @@ public class Drone extends Body {
         constantForce = force;
         return this;
     }
+
+    public void sensorInput(List<Body> bodies) throws Exception {
+        List<Body> neighbour = findAdjacent(this, bodies, sensorRange);
+        System.out.println(String.format("%s objects detected!", neighbour.size()));
+        BufferedWriter bf = new BufferedWriter(new FileWriter(inputData));
+        String dummyHeader1 = "2\n";
+        String dummyHeader2 = "1\n";
+        bf.write(dummyHeader1);
+        bf.write(dummyHeader2);
+        bf.write(vec2str(getWorldCenter()) + "\n");
+        for (Body body : neighbour) {
+            Rectangle re = (Rectangle) body.getFixture(0).getShape();
+            double width = re.getWidth();
+            double height = re.getHeight();
+            Vector2 center = body.getWorldCenter();
+            Vector2 leftTop = new Vector2(center.x - width / 2, center.y - height / 2);
+            Vector2 rightBot = new Vector2(center.x + width / 2, center.y + height / 2);
+            bf.write(vec2str(leftTop) + " " + vec2str(rightBot) + "\n");
+        }
+        bf.close();
+
+    }
+
 
     public ConstantForce getConstantForce() {
         return constantForce;
@@ -62,13 +98,6 @@ public class Drone extends Body {
      */
     protected double runBashCommand() throws InterruptedException, IOException {
         //Run the simulation
-        String gem5Dir = "/home/jinfenglin/Documents/gem5-gpu";
-        String gem5 = gem5Dir + "/gem5/build/VI_hammer/gem5.opt";
-        String config = gem5Dir + "/gem5-gpu/configs/se_fusion.py";
-        String benchmarkDir = gem5Dir + "/benchmarks/rodinia/droneControl";
-        String controlProgram = benchmarkDir + "/gem5_fusion_droneControl";
-        String inputData = benchmarkDir + "/input.txt";
-        String output_path = gem5Dir + "/gem5/m5out/stats.txt";
 
         String cmd = String.format("%s %s -c %s -o %s", gem5, config, controlProgram, inputData);
         Process proc = Runtime.getRuntime().exec(cmd);
@@ -107,16 +136,23 @@ public class Drone extends Body {
             }
         }
         bf.close();
+        System.out.println("Delay=" + time);
         return time;
     }
 
     private void updateDirection(String direction) {
-        Vector2 directionVec = new Vector2(directionMap.get(direction));
+        Vector2 directionVec;
+        try {
+            directionVec = new Vector2(directionMap.get(direction));
+        } catch (Exception e) {
+            System.out.print("Direction not given, take default one!");
+            directionVec = new Vector2(1, 0);
+        }
         /**this.clearForce();
-        this.clearAccumulatedForce();
-        ConstantForce force = new ConstantForce(directionVec.multiply(10), refreshCycle );
-        applyConstantForce(force);**/
-        this.velocity = directionVec.multiply(10);
+         this.clearAccumulatedForce();
+         ConstantForce force = new ConstantForce(directionVec.multiply(10), refreshCycle );
+         applyConstantForce(force);**/
+        setLinearVelocity(directionVec.multiply(10));
     }
 
     private void initDirection() {
@@ -130,6 +166,7 @@ public class Drone extends Body {
     public Drone(double refreshCycle, double deadline) {
         delay = 0;
         dealineMissCount = 0;
+        sensorRange = 5;
         initDirection();
         constantForce = new ConstantForce(new Vector2(0, 0), 0);
         this.deadline = deadline;

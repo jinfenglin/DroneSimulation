@@ -13,8 +13,8 @@ import java.util.Random;
  */
 public class MapGenerator {
     private static Logger logger = LogManager.getLogger("graphLog");
-    final int WIDTH = 1200;
-    final int HEIGTH = 800;
+    final int WIDTH = 100;
+    final int HEIGTH = 100;
     int number;
     int uppperBound = 20;
     Random rand;
@@ -81,7 +81,7 @@ public class MapGenerator {
     }
 
     public static void main(String[] args) {
-        MapGenerator mg = new MapGenerator(20);
+        MapGenerator mg = new MapGenerator(40);
         mg.generate();
     }
 
