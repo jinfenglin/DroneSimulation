@@ -6,10 +6,8 @@ import event.SimulationDroneEvent;
 import event.WordInfoEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.geometry.Geometry;
-import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 import robotBody.Drone;
@@ -22,7 +20,6 @@ import java.util.*;
 public class Simulator2D extends AsyncSimulationFrame {
     private static Logger logger = LogManager.getLogger("simLog");
     private Map<UUID, Integer> drones;
-    private List<WordInfoEvent> obstacles;
     private Gson gson;
 
     @Override
@@ -77,7 +74,6 @@ public class Simulator2D extends AsyncSimulationFrame {
         super();
         gson = new Gson();
         drones = new HashMap<>();
-        obstacles = new ArrayList<>();
         readGraph("graph/graph-2017-04-24 18:27:12.log");
     }
 
