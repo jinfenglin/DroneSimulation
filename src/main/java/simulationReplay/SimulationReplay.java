@@ -26,7 +26,7 @@ public class SimulationReplay extends Application {
     @Override
     public void init() throws Exception {
         stop_animation = false;
-        manger = new SimReplayManger("simulationLog/simLog-2017-04-24 00:24:12.log");
+        manger = new SimReplayManger("simulationLog/simLog-2017-04-24 23:57:21.log");
     }
 
     public static void main(String[] args) {

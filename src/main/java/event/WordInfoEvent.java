@@ -9,11 +9,11 @@ import org.dyn4j.geometry.Vector2;
  */
 public class WordInfoEvent {
     public Vector2 leftTop;
-    public BodyFixture bodyFixture;
+    public Vector2 rightBottom;
 
-    public WordInfoEvent(BodyFixture bodyFixture, Vector2 leftTop) {
-        this.bodyFixture = bodyFixture;
+    public WordInfoEvent(Vector2 leftTop, Vector2 rightBottom) {
         this.leftTop = leftTop;
+        this.rightBottom = rightBottom;
     }
 }
 

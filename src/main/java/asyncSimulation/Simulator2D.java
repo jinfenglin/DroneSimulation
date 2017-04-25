@@ -56,12 +56,9 @@ public class Simulator2D extends AsyncSimulationFrame {
             String line;
             while (((line = bf.readLine()) != null)) {
                 String[] coordinate = line.split(",");
-                double width = Double.valueOf(coordinate[2]) - Double.valueOf(coordinate[0]);
-                double height = Double.valueOf(coordinate[3]) - Double.valueOf(coordinate[1]);
-                System.out.println(width + " " + height);
-                Rectangle rectangle = new Rectangle(width, height);
                 Vector2 leftTop = new Vector2(Double.valueOf(coordinate[0]), Double.valueOf(coordinate[1]));
-                WordInfoEvent wEvent = new WordInfoEvent(new BodyFixture(rectangle), leftTop);
+                Vector2 rightBottom = new Vector2(Double.valueOf(coordinate[2]), Double.valueOf(coordinate[3]));
+                WordInfoEvent wEvent = new WordInfoEvent(leftTop, rightBottom);
                 String jsonString = gson.toJson(wEvent);
                 logger.info("WorldInfoEvent:" + jsonString);
             }

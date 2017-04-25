@@ -8,6 +8,7 @@ import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.geometry.Geometry;
 import org.dyn4j.geometry.MassType;
+import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 import robotBody.Drone;
 import utils.PhysicUtil;
@@ -43,7 +44,6 @@ public class SimReplayManger {
         testDrone.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
         testDrone.translate(2, 2);
         world.addBody(testDrone);
-
         for (Body body : obstacles) {
             world.addBody(body);
         }
@@ -63,11 +63,13 @@ public class SimReplayManger {
             if (eventType.equals("SimulationDroneEvent")) {
                 SimulationDroneEvent event = gson.fromJson(eventContent, SimulationDroneEvent.class);
                 events.add(event);
-            } else if (eventType.equals("WordInfoEvent")) {
+            } else if (eventType.equals("WorldInfoEvent")) {
                 WordInfoEvent event = gson.fromJson(eventContent, WordInfoEvent.class);
                 Body body = new Body();
-                body.addFixture(event.bodyFixture);
-                body.translate(event.leftTop);
+                double width = event.rightBottom.x - event.leftTop.x;
+                double height = event.rightBottom.y - event.leftTop.y;
+                body.addFixture(Geometry.createRectangle(width, height));
+                body.translate((event.rightBottom.x + event.leftTop.x) / 2, (event.rightBottom.y + event.leftTop.y) / 2);
                 obstacles.add(body);
             }
         }
@@ -94,10 +96,7 @@ public class SimReplayManger {
         if (event.time <= cur_time) {
             System.out.print(String.format("Event happends! EventTime=%s CurTime=%s\n", event.time, cur_time));
             events.remove(0);
-            //Apply the event to the world
-            //TODO Add body id to log file, retrive object by id
             Drone drone = (Drone) world.getBody(0);
-            //System.out.println("Velocity="+event.velocity);
             drone.applyConstantForce(event.force);
             drone.setLinearVelocity(event.velocity);
         }
