@@ -3,6 +3,7 @@ package robotBody;
 
 import asyncSimulation.ConstantForce;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.Force;
 import org.dyn4j.geometry.Rectangle;
 import org.dyn4j.geometry.Vector2;
 
@@ -12,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static utils.PhysicUtil.findAdjacent;
+import static utils.PhysicUtil.getBeacons;
 import static utils.PhysicUtil.vec2str;
 
 public class Drone extends Body {
@@ -35,9 +37,11 @@ public class Drone extends Body {
     private String benchmarkDir = gem5Dir + "/benchmarks/rodinia/droneControl";
     private String controlProgram = benchmarkDir + "/gem5_fusion_droneControl";
     private String inputData = benchmarkDir + "/input.txt";
+    private String hardWareConfig = "--num-cpu=4 --gpu_core_config=Maxwell  -clusters=1 --mem_freq=1600MHZ --mem-size=4GB --l1i_size=48kB --l1d_size=32kB --l2_size=2MB";
     private String output_path = "m5out/stats.txt";
 
     double sensorRange;
+    List<Vector2> beacons;
 
 
     public Body applyConstantForce(ConstantForce force) {
@@ -48,7 +52,6 @@ public class Drone extends Body {
 
     public void sensorInput(List<Body> bodies) throws Exception {
         List<Body> neighbour = findAdjacent(this, bodies, sensorRange);
-        System.out.println(String.format("%s objects detected!", neighbour.size()));
         BufferedWriter bf = new BufferedWriter(new FileWriter(inputData));
         String dummyHeader1 = "2\n";
         String dummyHeader2 = "1\n";
@@ -65,7 +68,6 @@ public class Drone extends Body {
             bf.write(vec2str(leftTop) + " " + vec2str(rightBot) + "\n");
         }
         bf.close();
-
     }
 
 
@@ -99,9 +101,17 @@ public class Drone extends Body {
     protected double runBashCommand() throws InterruptedException, IOException {
         //Run the simulation
 
-        String cmd = String.format("%s %s -c %s -o %s", gem5, config, controlProgram, inputData);
+        String cmd = String.format("%s %s %s -c %s -o %s", gem5, config, hardWareConfig, controlProgram, inputData);
         Process proc = Runtime.getRuntime().exec(cmd);
         proc.waitFor();
+
+/*        //debug
+        BufferedReader dbf = new BufferedReader(new FileReader(inputData));
+        String tp;
+        while ((tp = dbf.readLine()) != null) {
+            System.out.println(tp);
+        }
+        dbf.close();*/
 
         //Extract the direction and consumed time
         Pattern pattern = Pattern.compile("^direction\\d+$");
@@ -112,12 +122,33 @@ public class Drone extends Body {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
                 direction = matcher.group(0);
+                //System.out.print("Moving direction=" + direction + "\n");
                 break;
             }
         }
         //Apply the force
-        updateDirection(direction);
+        patchAlgorithm();
+        //updateDirection(direction);
+
         return getDelay(output_path);
+    }
+
+    private void patchAlgorithm() {
+        if (beacons.size() == 0)
+            return;
+
+        Vector2 head = beacons.get(0);
+        Vector2 center = getWorldCenter();
+        if (head.distance(center) < 1) {
+
+            beacons.remove(0);
+            if (beacons.size() == 0)
+                return;
+            head = beacons.get(0);
+        }
+        Vector2 speed = new Vector2(head).subtract(center);
+        speed.normalize();
+        setLinearVelocity(speed.multiply(4));
     }
 
     private double getDelay(String outputPath) throws IOException {
@@ -136,16 +167,18 @@ public class Drone extends Body {
             }
         }
         bf.close();
-        System.out.println("Delay=" + time);
+        //System.out.println("Delay=" + time);
         return time;
     }
 
     private void updateDirection(String direction) {
         Vector2 directionVec;
         try {
+            if (direction.equals("direction0"))
+                return;
             directionVec = new Vector2(directionMap.get(direction));
         } catch (Exception e) {
-            System.out.print("Direction not given, take default one!");
+            System.out.println("Direction not given, take default one! The directio string is:" + direction);
             directionVec = new Vector2(1, 0);
         }
         /**this.clearForce();
@@ -167,6 +200,7 @@ public class Drone extends Body {
         delay = 0;
         dealineMissCount = 0;
         sensorRange = 5;
+        beacons = getBeacons();
         initDirection();
         constantForce = new ConstantForce(new Vector2(0, 0), 0);
         this.deadline = deadline;

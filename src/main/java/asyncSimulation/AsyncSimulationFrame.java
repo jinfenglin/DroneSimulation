@@ -39,7 +39,7 @@ public abstract class AsyncSimulationFrame {
 
     public void run() throws Exception{
         this.initializeWorld();
-        while (!isStopped && simulationTime < 10) {
+        while (!isStopped && simulationTime < 35) {
             if (simulationTime % 2 < 0.02)
                 System.out.println(simulationTime);
             loopIteration();
