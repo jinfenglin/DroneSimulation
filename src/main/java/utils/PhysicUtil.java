@@ -30,7 +30,7 @@ public class PhysicUtil {
     }
 
     public static String vec2str(Vector2 vec) {
-        return vec.x + " " + vec.y;
+        return (int) vec.x + " " + (int) vec.y;
     }
 
     public static List<Body> findAdjacent(Body core, List<Body> neighbours, double distanceThreshold) {

@@ -35,7 +35,7 @@ public class Simulator2D extends AsyncSimulationFrame {
         d1.addFixture(Geometry.createRectangle(width, height));
         d1.setMassType(MassType.NORMAL);
         d1.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
-        d1.translate(0, 5);
+        d1.translate(ConfigureManger.getConfigureManger().getDroneStart());
         d1.getFixture(0).setRestitution(0.8);
         world.addBody(d1);
         for (Body obstacle : obstacles) {
@@ -83,7 +83,8 @@ public class Simulator2D extends AsyncSimulationFrame {
         gson = new Gson();
         drones = new HashMap<>();
         obstacles = new LinkedList<>();
-        readGraph("graph/graph-2017-04-25 03:49:59.log");
+        String graphPath = ConfigureManger.getConfigureManger().getGraphPath();
+        readGraph(graphPath);
     }
 
     public static void main(String[] args) throws Exception {

@@ -48,7 +48,6 @@ public class Drone extends Body {
 
     public void sensorInput(List<Body> bodies) throws Exception {
         List<Body> neighbour = findAdjacent(this, bodies, sensorRange);
-        System.out.println(String.format("%s objects detected!", neighbour.size()));
         BufferedWriter bf = new BufferedWriter(new FileWriter(inputData));
         String dummyHeader1 = "2\n";
         String dummyHeader2 = "1\n";
@@ -143,9 +142,11 @@ public class Drone extends Body {
     private void updateDirection(String direction) {
         Vector2 directionVec;
         try {
+            if (direction == "direction0")
+                return;
             directionVec = new Vector2(directionMap.get(direction));
         } catch (Exception e) {
-            System.out.print("Direction not given, take default one!");
+            System.out.print("Direction not given, take default one! The directio string is:" + direction);
             directionVec = new Vector2(1, 0);
         }
         /**this.clearForce();
@@ -166,7 +167,7 @@ public class Drone extends Body {
     public Drone(double refreshCycle, double deadline) {
         delay = 0;
         dealineMissCount = 0;
-        sensorRange = 5;
+        sensorRange = 500;
         initDirection();
         constantForce = new ConstantForce(new Vector2(0, 0), 0);
         this.deadline = deadline;

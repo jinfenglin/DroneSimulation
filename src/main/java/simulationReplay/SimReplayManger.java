@@ -1,5 +1,6 @@
 package simulationReplay;
 
+import asyncSimulation.ConfigureManger;
 import event.SimulationDroneEvent;
 import com.google.gson.Gson;
 import event.WordInfoEvent;
@@ -38,7 +39,7 @@ public class SimReplayManger {
         testDrone.setMass(MassType.NORMAL);
         testDrone.setMass(PhysicUtil.getMassForRectangle(d1Center, width, height, mass));
         testDrone.getFixture(0).setRestitution(0.8);
-        testDrone.translate(0, 5);
+        testDrone.translate(ConfigureManger.getConfigureManger().getDroneStart());
         world.addBody(testDrone);
         for (Body body : obstacles) {
             world.addBody(body);

@@ -81,7 +81,7 @@ public class MapGenerator {
     }
 
     public static void main(String[] args) {
-        MapGenerator mg = new MapGenerator(40);
+        MapGenerator mg = new MapGenerator(80);
         mg.generate();
     }
 
