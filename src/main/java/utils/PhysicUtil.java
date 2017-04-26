@@ -1,12 +1,11 @@
 package utils;
 
 import org.dyn4j.dynamics.Body;
-import org.dyn4j.geometry.Geometry;
-import org.dyn4j.geometry.Mass;
-import org.dyn4j.geometry.MassType;
-import org.dyn4j.geometry.Vector2;
+import org.dyn4j.geometry.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PhysicUtil {
@@ -47,4 +46,21 @@ public class PhysicUtil {
         }
         return result;
     }
+
+    public static List<Vector2> getBeacons() {
+
+        List<Vector2> vec = new ArrayList<>();
+        vec.add(new Vector2(7, 20));
+        vec.add(new Vector2(7, 24));
+        vec.add(new Vector2(41, 24));
+        vec.add(new Vector2(41, 17));
+        vec.add(new Vector2(53, 17));
+        vec.add(new Vector2(53, 25));
+        vec.add(new Vector2(60, 25));
+        vec.add(new Vector2(77, 25));
+        vec.add(new Vector2(77, 36));
+        vec.add(new Vector2(100, 36));
+        return vec;
+    }
+
 }

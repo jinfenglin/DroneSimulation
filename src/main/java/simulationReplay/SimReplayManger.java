@@ -92,6 +92,9 @@ public class SimReplayManger {
             Drone drone = (Drone) world.getBody(0);
             drone.applyConstantForce(event.force);
             drone.setLinearVelocity(event.velocity);
+            if(drone.getWorldCenter().distance(event.wordCenter)>1)
+                drone.translate(event.wordCenter.subtract(drone.getWorldCenter()));
+
         }
         //System.out.println(String.format("locatoin = %s", world.getBody(0).getWorldCenter()));
         world.update(elapsedTime);

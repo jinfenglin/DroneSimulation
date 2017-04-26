@@ -12,7 +12,7 @@ public class ConfigureManger {
 
     protected ConfigureManger() {
         graphPath = "graph/graph-2017-04-25 21:03:24.log";
-        simLogPath = "simulationLog/simLog-2017-04-25 22:01:19.log";
+        simLogPath = "simulationLog/simLog-2017-04-26 04:49:17.log";
         droneStart = new Vector2(0, 20);
 
     }

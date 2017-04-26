@@ -45,7 +45,6 @@ public class SimulationReplay extends Application {
         stkPan1.getChildren().add(canvass[0]);
         stkPan1.setStyle("-fx-border-color: black");
         root.getChildren().add(stkPan1);
-
         StackPane stkPan2 = new StackPane();
         stkPan2.getChildren().add(canvass[1]);
         stkPan2.setStyle("-fx-border-color: black");
