@@ -14,7 +14,7 @@ import java.util.Random;
 public class MapGenerator {
     private static Logger logger = LogManager.getLogger("graphLog");
     final int WIDTH = 100;
-    final int HEIGTH = 100;
+    final int HEIGTH = 40;
     int number;
     int uppperBound = 20;
     Random rand;

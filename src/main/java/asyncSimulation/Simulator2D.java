@@ -28,7 +28,7 @@ public class Simulator2D extends AsyncSimulationFrame {
     @Override
     protected void initializeWorld() {
         world.setGravity(new Vector2(0, 0));
-        Drone d1 = new Drone(0.5, 0.5);
+        Drone d1 = new Drone(0.1, 0.5);
         Vector2 d1Center = new Vector2(0, 0);
         double width = 0.45, height = 0.55;
         double mass = 3.99;
@@ -56,6 +56,7 @@ public class Simulator2D extends AsyncSimulationFrame {
                 String jsonString = gson.toJson(new SimulationDroneEvent(drone.getConstantForce(), drone.getLinearVelocity(), drone.getWorldCenter(), simulationTime));
                 logger.info("SimulationDroneEvent:" + jsonString);
             }
+
         }
         super.update(eclapsedTime);
     }

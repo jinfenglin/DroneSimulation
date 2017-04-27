@@ -27,6 +27,7 @@ public class SimReplayManger {
     double cur_time;
     World world;
     Gson gson;
+    private int cur_event_index = 0;
 
     private void initWorld() {
         world = new World();
@@ -82,22 +83,26 @@ public class SimReplayManger {
      * @return
      */
     public boolean updateWorld(double elapsedTime) {
-        if (events.size() == 0)
-            return true;
-        SimulationDroneEvent event = events.get(0);
         cur_time += elapsedTime;
-        if (event.time <= cur_time) {
-            System.out.println(String.format("Event happends! EventTime=%s CurTime=%s, location=%s", event.time, cur_time, world.getBody(0).getWorldCenter()));
-            events.remove(0);
-            Drone drone = (Drone) world.getBody(0);
-            drone.applyConstantForce(event.force);
-            drone.setLinearVelocity(event.velocity);
-            if(drone.getWorldCenter().distance(event.wordCenter)>1)
-                drone.translate(event.wordCenter.subtract(drone.getWorldCenter()));
+        System.out.println("Cur time=" + cur_time);
+        while (cur_event_index < events.size() && events.get(cur_event_index).time <= cur_time) {
+            System.out.println("Event time= " + events.get(cur_event_index).time + "Cur_index=" + cur_event_index);
+            if (cur_event_index == events.size() - 1)
+                break;
+            SimulationDroneEvent nextEvent = events.get(cur_event_index + 1);
+            if (nextEvent.time > cur_time)
+                break;
+            cur_event_index++;
 
         }
-        //System.out.println(String.format("locatoin = %s", world.getBody(0).getWorldCenter()));
-        world.update(elapsedTime);
+        if (events.size() == cur_event_index)
+            return true;
+        SimulationDroneEvent event = events.get(cur_event_index);
+        if (cur_time >= event.time) {
+            cur_event_index++;
+            Drone drone = (Drone) world.getBody(0);
+            drone.translate(new Vector2(event.wordCenter).subtract(drone.getWorldCenter()));
+        }
         return false;
     }
 

@@ -51,7 +51,7 @@ public class Drone extends Body {
     }
 
     public void sensorInput(List<Body> bodies) throws Exception {
-        List<Body> neighbour = findAdjacent(this, bodies, sensorRange);
+        /**List<Body> neighbour = findAdjacent(this, bodies, sensorRange);
         BufferedWriter bf = new BufferedWriter(new FileWriter(inputData));
         String dummyHeader1 = "2\n";
         String dummyHeader2 = "1\n";
@@ -68,6 +68,7 @@ public class Drone extends Body {
             bf.write(vec2str(leftTop) + " " + vec2str(rightBot) + "\n");
         }
         bf.close();
+         **/
     }
 
 
@@ -101,35 +102,29 @@ public class Drone extends Body {
     protected double runBashCommand() throws InterruptedException, IOException {
         //Run the simulation
 
-        String cmd = String.format("%s %s %s -c %s -o %s", gem5, config, hardWareConfig, controlProgram, inputData);
-        Process proc = Runtime.getRuntime().exec(cmd);
-        proc.waitFor();
+        /*
+         String cmd = String.format("%s %s %s -c %s -o %s", gem5, config, hardWareConfig, controlProgram, inputData);
+         Process proc = Runtime.getRuntime().exec(cmd);
+         proc.waitFor();
 
-/*        //debug
-        BufferedReader dbf = new BufferedReader(new FileReader(inputData));
-        String tp;
-        while ((tp = dbf.readLine()) != null) {
-            System.out.println(tp);
-        }
-        dbf.close();*/
+         //Extract the direction and consumed time
+         Pattern pattern = Pattern.compile("^direction\\d+$");
+         BufferedReader bf = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+         String line;
+         String direction = "";
+         while ((line = bf.readLine()) != null) {
+         Matcher matcher = pattern.matcher(line);
+         if (matcher.find()) {
+         direction = matcher.group(0);
+         //System.out.print("Moving direction=" + direction + "\n");
+         break;
+         }
+         }
 
-        //Extract the direction and consumed time
-        Pattern pattern = Pattern.compile("^direction\\d+$");
-        BufferedReader bf = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-        String line;
-        String direction = "";
-        while ((line = bf.readLine()) != null) {
-            Matcher matcher = pattern.matcher(line);
-            if (matcher.find()) {
-                direction = matcher.group(0);
-                //System.out.print("Moving direction=" + direction + "\n");
-                break;
-            }
-        }
-        //Apply the force
+         //Apply the force
+         updateDirection(direction);
+         */
         patchAlgorithm();
-        //updateDirection(direction);
-
         return getDelay(output_path);
     }
 
@@ -148,7 +143,7 @@ public class Drone extends Body {
         }
         Vector2 speed = new Vector2(head).subtract(center);
         speed.normalize();
-        setLinearVelocity(speed.multiply(4));
+        setLinearVelocity(speed.multiply(8));
     }
 
     private double getDelay(String outputPath) throws IOException {
